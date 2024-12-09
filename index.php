@@ -1,41 +1,95 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="<?php bloginfo( 'charset' ); ?>">
-<title><?php wp_title( '|', true, 'right' ); ?></title>
-<link rel="stylesheet" href="<?php echo esc_url( get_stylesheet_uri() ); ?>" type="text/css" />
-<?php wp_head(); ?>
-</head>
-<body>
-<h1><?php bloginfo( 'name' ); ?></h1>
-<h2><?php bloginfo( 'description' ); ?></h2>
+<?php get_header(); ?>
 
-<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
+<div class="container">
+    <div class="row">
+        <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
+            <div class="col-md-6 mb-4"> <!-- Každý příspěvek zabírá polovinu řádku -->
+                <div class="card h-100 d-flex flex-row"> <!-- "Karta" příspěvku -->
+                    <?php if (has_post_thumbnail()) : ?>
+                        <a href="<?php the_permalink(); ?>">
+                            <img src="<?php the_post_thumbnail_url('medium'); ?>" class="card-img-top" alt="<?php the_title(); ?>">
+                        </a>
+                    <?php endif; ?>
 
-<h3><?php the_title(); ?></h3>
+                    <div class="card-body">
+                        <!-- Kategorie -->
+                        <div class="post-category mb-2">
+                            <?php foreach (get_the_category() as $category) : ?>
+                                <span class="badge bg-primary"><?php echo $category->name; ?></span>
+                            <?php endforeach; ?>
+                        </div>
 
-<?php the_content(); ?>
-<?php wp_link_pages(); ?>
-<?php edit_post_link(); ?>
+                        <!-- Nadpis -->
+                        <h5 class="card-title">
+                            <a href="<?php the_permalink(); ?>" class="text-dark text-decoration-none">
+                                <?php the_title(); ?>
+                            </a>
+                        </h5>
 
-<?php endwhile; ?>
+                        <!-- Úryvek -->
+                        <p class="card-text"><?php echo get_the_excerpt(); ?></p>
+
+                        <!-- Autor a datum -->
+                        <p class="card-meta text-muted mb-0">
+                            Autor: <?php the_author(); ?> | 
+                            <time datetime="<?php echo get_the_date('c'); ?>">
+                                <?php echo get_the_date(); ?>
+                            </time>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        <?php endwhile; else : ?>
+            <p>Žádné příspěvky nebyly nalezeny.</p>
+        <?php endif; ?>
+    </div>
+</div>
+
+<?php get_footer(); ?>
+
+
+<!--<?php
+get_header();
+?>
+
+<main>
+    <?php if (have_posts()) : ?>
+        <div class="post-grid">
+            <?php while (have_posts()) : the_post(); ?>
+                <article class="post-item">
+                    <div class="post-image">
+                        <?php if (has_post_thumbnail()) : ?>
+                            <a href="<?php the_permalink(); ?>">
+                                <?php the_post_thumbnail('medium'); ?>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                    <div class="post-content">
+                        <h3 class="post-title">
+                            <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                        </h3>
+                        <div class="post-meta">
+                            <span class="post-author"><?php the_author(); ?></span> |
+                            <span class="post-date"><?php the_date(); ?></span>
+                        </div>
+                        <p><?php echo wp_trim_words(get_the_excerpt(), 20, '...'); ?></p>
+                        <a href="<?php the_permalink(); ?>" class="read-more">Číst více...</a>
+                    </div>
+                </article>
+            <?php endwhile; ?>
+        </div>
+
+        <nav class="pagination">
+            <div class="nav-previous"><?php previous_posts_link('← Previous'); ?></div>
+            <div class="nav-next"><?php next_posts_link('Next →'); ?></div>
+        </nav>
+    <?php else : ?>
+        <p>No posts found. :(</p>
+    <?php endif; ?>
+</main>
 
 <?php
-if ( get_next_posts_link() ) {
-next_posts_link();
-}
-?>
-<?php
-if ( get_previous_posts_link() ) {
-previous_posts_link();
-}
+get_footer();
 ?>
 
-<?php else: ?>
-
-<p>No posts found. :(</p>
-
-<?php endif; ?>
-<?php wp_footer(); ?>
-</body>
-</html>
+-->
